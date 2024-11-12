@@ -2,13 +2,16 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios";
+import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice.js";
+import { useDispatch } from "react-redux";
+import { useSelector } from "react-redux";
 
 export default function Signin() {
 
   const [formData, setFormData] = useState({});
-  const [errorMessage, setErrorMessage] = useState(null);
-  const [loading, setLoading] = useState(false);
+  const {loading, error: errorMessage} = useSelector((state) => state.user);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
 
   const hanldeChange = (e) => {
     setFormData({...formData, [e.target.id]: e.target.value.trim()});
@@ -16,26 +19,21 @@ export default function Signin() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setErrorMessage(null);
 
     if ( !formData.email || !formData.password ) {
-      return setErrorMessage("All fields are required");
+      return dispatch(signInFailure("All fields are required"));
     }
 
     try {
-      setLoading(true);
-      setErrorMessage(null);
+      dispatch(signInStart());
       const res = await axios.post('/api/auth/signin', formData);
       if (res.data.success === false) {
-        setLoading(false);
-        return setErrorMessage(res.data.message || "User already exists");
+        dispatch(signInFailure(res.data.message));
       }
+      dispatch(signInSuccess(res.data));
       navigate('/');
     } catch (error) { 
-      setErrorMessage(error.response?.data?.message || "Something went wrong!");
-      console.log(error);
-    } finally {
-      setLoading(false);
+      dispatch(signInFailure(error.response?.data?.message || "Something went wrong!"));
     }
   }
 
