@@ -1,7 +1,44 @@
-import { Button, Label, TextInput } from "flowbite-react";
-import { Link } from "react-router-dom";
+import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useState } from "react";
+import axios from "axios";
 
 export default function Signup() {
+
+  const [formData, setFormData] = useState({});
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
+
+  const hanldeChange = (e) => {
+    setFormData({...formData, [e.target.id]: e.target.value.trim()});
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage(null);
+
+    if (!formData.username || !formData.email || !formData.password) {
+      return setErrorMessage("All fields are required");
+    }
+
+    try {
+      setLoading(true);
+      setErrorMessage(null);
+      const res = await axios.post('/api/auth/signup', formData);
+      if (res.data.success === false) {
+        setLoading(false);
+        return setErrorMessage(res.data.message || "User already exists");
+      }
+      navigate('/signin');
+    } catch (error) { 
+      setErrorMessage(error.response?.data?.message || "Something went wrong!");
+      console.log(error);
+    } finally {
+      setLoading(false);
+    }
+  }
+
   return (
     <div className="min-h-screen mt-20">
       <div className="flex p-3 max-w-3xl mx-auto flex-col md:flex-row md:items-center gap-10">
@@ -19,7 +56,7 @@ export default function Signup() {
 
         {/* right side */}
         <div className="flex-1">
-          <form className="flex flex-col gap-4">
+          <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
             <div>
               <Label value="Username" />
               <TextInput
@@ -27,6 +64,7 @@ export default function Signup() {
                 type="text"
                 placeholder="Username"
                 required={true}
+                onChange={hanldeChange}
               />
             </div>
             <div>
@@ -36,6 +74,7 @@ export default function Signup() {
                 type="email"
                 placeholder="name@email.com"
                 required={true}
+                onChange={hanldeChange}
               />
             </div>
             <div>
@@ -45,10 +84,18 @@ export default function Signup() {
                 type="password"
                 placeholder="Password"
                 required={true}
+                onChange={hanldeChange}
               />
             </div>
-            <Button gradientDuoTone="purpleToPink" type="submit">
-              Sign Up
+            <Button gradientDuoTone="purpleToPink" type="submit" disabled={loading}>
+              { loading ? (
+                <>
+                  <Spinner size="sm" />
+                  <span className="ml-2">Loading...</span>
+                </>
+              ) : (
+                "Sign Up"
+              )}
             </Button>
           </form>
 
@@ -58,6 +105,12 @@ export default function Signup() {
               Sign In
             </Link>
           </div>
+
+          {errorMessage && (
+            <Alert className="mt-5" color="failure">
+              {errorMessage}
+            </Alert>
+          )}
 
         </div>
       </div>
