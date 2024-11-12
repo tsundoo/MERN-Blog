@@ -29,7 +29,7 @@ export default function Header() {
         </Button>
         <Link to="/signin">
           <Button gradientDuoTone="purpleToPink" outline>
-            Sign in
+            Sign In
           </Button>
           <Navbar.Toggle />
         </Link>
