@@ -2,6 +2,7 @@ import { Alert, Button, Label, Spinner, TextInput } from "flowbite-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useState } from "react";
 import axios from "axios"; 
+import OAuth from "../components/OAuth.jsx";
 
 export default function Signup() {
 
@@ -97,6 +98,7 @@ export default function Signup() {
                 "Sign Up"
               )}
             </Button>
+            <OAuth />
           </form>
 
           <div className="flex justify-center gap-2 mt-3 text-sm">

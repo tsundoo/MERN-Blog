@@ -5,6 +5,7 @@ import axios from "axios";
 import { signInStart, signInSuccess, signInFailure } from "../redux/user/userSlice.js";
 import { useDispatch } from "react-redux";
 import { useSelector } from "react-redux";
+import OAuth from "../components/OAuth.jsx";
 
 export default function Signin() {
 
@@ -85,6 +86,7 @@ export default function Signin() {
                 "Sign In"
               )}
             </Button>
+            <OAuth />
           </form>
 
           <div className="flex justify-center gap-2 mt-3 text-sm">
