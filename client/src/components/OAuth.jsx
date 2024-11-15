@@ -13,11 +13,11 @@ export default function OAuth() {
     const dispatch = useDispatch(); // Redux dispatch hook
     const navigate = useNavigate(); // Navigation hook
     const handleGoogleClick = async () => {
-        // Initialize Google Authentication Provider
-        const provider = new GoogleAuthProvider();
-        // Set custom parameters for the provider
-        provider.setCustomParameters({ prompt: "select_account" });
         try {
+            // Initialize Google Authentication Provider
+            const provider = new GoogleAuthProvider();
+            // Set custom parameters for the provider
+            provider.setCustomParameters({ prompt: "select_account" });
             // Sign in with Google using Firebase
             const result = await signInWithPopup (auth, provider)
             // Send user data to backend for authentication
@@ -27,7 +27,7 @@ export default function OAuth() {
                 avatar: result.user.photoURL
             })
             // If authentication is successful, dispatch the sign-in success action and navigate to the home page
-            if (res.ok) {
+            if (res.status === 200) {
                 dispatch(signInSuccess(res.data));
                 navigate('/');
             }
