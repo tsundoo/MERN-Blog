@@ -63,9 +63,9 @@ export default function Header() {
           <Button gradientDuoTone="purpleToPink" outline>
             Sign In
           </Button>
-          <Navbar.Toggle />
         </Link>
         )}
+        <Navbar.Toggle />
       </div>
       <Navbar.Collapse>
         <Navbar.Link as={Link} to="/" active={path === "/"} className="text-sm sm:text-base">
